@@ -41,11 +41,13 @@ export const CreateNoteButton = () => {
 
   const handleSaveNote = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
-    setLoading(true);
 
     if (!title) {
       setTitleError('Title is required');
+      return;
     }
+
+    setLoading(true);
 
     try {
       await createNote({ title, content });
