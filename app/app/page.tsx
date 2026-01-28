@@ -4,6 +4,12 @@ import { signout } from './login/actions'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
+import { getNotes } from '@/app/data/get-notes';
+
+import { CreateNoteButton } from '@/components/create-note-button'
+import { DeleteNoteButton } from '@/components/delete-note-button'
+import { CreateAISummaryButton } from '@/components/create-ai-summary-button'
+
 // =============================================================================
 // QUICKNOTES AI - TECHNICAL ASSESSMENT
 // =============================================================================
@@ -28,23 +34,8 @@ export default async function NotesPage() {
   // TODO 1: CONNECT NOTES TO DATABASE
   // ===========================================================================
   // Replace this hardcoded array with real data from Supabase.
-  
-  const hardcodedNotes = [
-    {
-      id: '1',
-      title: 'Welcome to QuickNotes AI',
-      content:
-        'This is your first note! You can create, edit, and delete notes. Try the AI Summarize feature to get a summary of all your notes.',
-      created_at: '2024-01-15T10:00:00Z',
-    },
-    {
-      id: '2',
-      title: 'Meeting Notes - Project Kickoff',
-      content:
-        'Discussed project timeline and deliverables. Team agreed on weekly sprints. Next meeting scheduled for Friday at 2 PM.',
-      created_at: '2024-01-16T14:30:00Z',
-    }
-  ]
+
+  const { notes, error } = await getNotes();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -75,9 +66,7 @@ export default async function NotesPage() {
                 3. Displays the summary to the user (modal, alert, or new section)
              
                 ================================================================ */}
-            <Button variant="secondary" disabled>
-              AI Summarize (TODO)
-            </Button>
+            <CreateAISummaryButton />
 
             {/* ================================================================
                 TODO 2: CREATE NEW NOTE
@@ -88,12 +77,13 @@ export default async function NotesPage() {
                 3. Refreshes the notes list
 
                 ================================================================ */}
-            <Button disabled>+ New Note (TODO)</Button>
+            <CreateNoteButton />
+
           </div>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {hardcodedNotes.map((note) => (
+          {notes?.map((note) => (
             <Card key={note.id} className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -106,9 +96,7 @@ export default async function NotesPage() {
                       2. Refreshes the notes list
 
                       ============================================================ */}
-                  <Button variant="ghost" size="sm" disabled>
-                    Delete (TODO)
-                  </Button>
+                  <DeleteNoteButton noteId={note.id} noteTitle={note.title} />
                 </div>
                 <CardDescription>
                   {new Date(note.created_at).toLocaleDateString('en-US', {
@@ -127,7 +115,11 @@ export default async function NotesPage() {
           ))}
         </div>
 
-        {hardcodedNotes.length === 0 && (
+        {error && (
+          <h2 className="text-2xl font-semibold">Oops! Something went wrong. Try again later</h2>
+        )}
+
+        {notes?.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500 mb-4">No notes yet. Create your first note!</p>
             <Button>+ Create Note</Button>
