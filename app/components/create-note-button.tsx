@@ -76,10 +76,9 @@ export const CreateNoteButton = () => {
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSaveNote}>
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>Add note</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re
-              done.
+              Add the title and the content of your note
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
